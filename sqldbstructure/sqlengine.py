@@ -27,7 +27,6 @@ class SQLEngine(ABC):
         cursor.execute(statement)
         rows = cursor.fetchone()
         cursor.close()
-
         return rows
 
     def _execute_sql_information_schema_table(self, statement):
@@ -40,7 +39,6 @@ class SQLEngine(ABC):
         cursor.execute(statement)
         rows = cursor.fetchall()
         cursor.close()
-
         return rows
 
     def _execute_sql_information_schema_columns(self, statement):
@@ -56,7 +54,6 @@ class SQLEngine(ABC):
 
         start_cursor = start_connection.cursor()
         end_cursor = self.connection.cursor()
-
         end_cursor.execute(create)
         start_cursor.execute(select)
         row = start_cursor.fetchone()

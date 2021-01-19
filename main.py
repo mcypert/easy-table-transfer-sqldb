@@ -27,8 +27,8 @@ from sqldbstructure.sqlcolumn import SQLServerColumn, MySQLColumn
 from sqldbstructure.sqldatabase import SQLServerDatabase, MySQLDatabase
 from sqldbstructure.sqlengine import SQLServerEngine, MySQLEngine
 
-sql_server = SQLServerEngine
-mysql = MySQLEngine
+sql_server = SQLServerEngine  # put connection information here
+mysql = MySQLEngine           # put connection information here
 
 tables = [
     'actor',
