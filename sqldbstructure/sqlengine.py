@@ -151,6 +151,31 @@ class SQLServerEngine(SQLEngine):
         database = self.database.database
         self.sql_activate_database(database=database)  # create a method that adds the new table to the self.tables
 
+    def sql_create_custom_table(self, query_statement, database, schema, table, drop_table=True):
+        """
+        """
+        if self.connection is None:
+            raise ex.SQLConnectionError("Connection is empty - connect to Engine")
+
+        cursor = self.connection.cursor()
+
+        database_statement = self._sql_information_schema_database(database)
+        database_exists = self._execute_sql_information_schema_database(database_statement)
+        if database_exists[0] == 0:
+            raise ex.SQLDatabaseError("Database does not exist")
+
+        if drop_table:
+            cursor.execute(f"drop table if exists {database}.{schema}.{table};")
+
+        full_statement = f"select * into {database}.{schema}.{table} from ({query_statement}) as t1;"
+        cursor.execute(full_statement)
+
+        if database.lower() == self.database.database.lower():
+            column_statement = self._sql_information_schema_column(database, table)
+            columns = self._execute_sql_information_schema_columns(column_statement)
+            self.database.construct_database(schema, table, columns)
+        cursor.close()
+
     def _sql_information_schema_database(self, database):
         """
         """
@@ -233,6 +258,31 @@ class MySQLEngine(SQLEngine):
         sqlengine.database.transfer_tables = {}
         database = self.database.database
         self.sql_activate_database(database=database)
+
+    def sql_create_custom_table(self, query_statement, database, table, drop_table=True):
+        """
+        """
+        if self.connection is None:
+            raise ex.SQLConnectionError("Connection is empty - connect to Engine")
+
+        cursor = self.connection.cursor()
+
+        database_statement = self._sql_information_schema_database(database)
+        database_exists = self._execute_sql_information_schema_database(database_statement)
+        if database_exists[0] == 0:
+            raise ex.SQLDatabaseError("Database does not exist")
+
+        if drop_table:
+            cursor.execute(f"drop table if exists {database}.{table};")
+
+        full_statement = f"create table {database}.{table} as {query_statement};"
+        cursor.execute(full_statement)
+
+        if database.lower() == self.database.database.lower():
+            column_statement = self._sql_information_schema_column(database, table)
+            columns = self._execute_sql_information_schema_columns(column_statement)
+            self.database.construct_database(table, columns)
+        cursor.close()
 
     def _sql_information_schema_database(self, database):
         """

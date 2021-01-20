@@ -27,29 +27,27 @@ from sqldbstructure.sqlcolumn import SQLServerColumn, MySQLColumn
 from sqldbstructure.sqldatabase import SQLServerDatabase, MySQLDatabase
 from sqldbstructure.sqlengine import SQLServerEngine, MySQLEngine
 
-sql_server = SQLServerEngine  # put connection information here
-mysql = MySQLEngine           # put connection information here
+# sql_server = SQLServerEngine  # put connection information here
+# mysql = MySQLEngine           # put connection information here
+
+sql_server = SQLServerEngine
+mysql = MySQLEngine
+
+statement = f"""
+    select first_name, last_name, title
+    from sakila.rental as t1
+    inner join sakila.customer as t2 on t1.customer_id = t2.customer_id
+    inner join sakila.inventory as t3 on t1.inventory_id = t3.inventory_id
+    inner join sakila.film as t4 on t3.film_id = t4.film_id
+"""
+
+# mysql.sql_create_custom_table(query_statement=statement, database='sakila', table='Tran_Table', drop_table=True)
 
 tables = [
-    'actor',
-    'address',
-    'category',
-    'city',
-    'country',
-    'customer',
-    'film',
-    'film_actor',
-    'film_category',
-    'film_text',
-    'inventory',
-    'language',
-    'payment',
-    'rental',
-    'staff',
+    'tran_table',
     'store'
 ]
 
 sql_server.sql_transfer_tables_from_mysql(sqlengine=mysql, tables=tables)
-
 sql_server.connection.close()
 mysql.connection.close()
