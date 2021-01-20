@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import mysql.connector
 import pyodbc
 import sqldbstructure.sqldatabase as sqldatabase
 import sqldbstructure.structureexcept as ex
@@ -311,13 +310,6 @@ class MySQLEngine(SQLEngine):
             order by ordinal_position
         """
         return statement
-
-    def _build_connection_dict000(self):
-        """
-        """
-        mappings = {'uid': 'user', 'pwd': 'password', 'server': 'host'}
-        connection_dict = {(mappings.get(k) if mappings.get(k) is not None else k): v for k, v in self.__dict__.items() if v is not None}
-        return connection_dict
 
     def __repr__(self):
         return f"{self.__class__.__name__}()"
